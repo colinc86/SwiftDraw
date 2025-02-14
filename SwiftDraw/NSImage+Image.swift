@@ -138,17 +138,17 @@ public extension SVG {
 
 extension SVG {
 
-    func makeBounds(size: CGSize?, scale: CGFloat, insets: Insets) -> (bounds: CGRect, pixelsWide: Int, pixelsHigh: Int) {
+    func makeBounds(size: CGSize?, scale: CGFloat, insets: Insets) -> (bounds: CGRect, pixelsWide: CGFloat, pixelsHigh: CGFloat) {
         let scale = scale == 0 ? (NSScreen.main?.backingScaleFactor ?? 1.0) : scale
         return Self.makeBounds(size: size, defaultSize: self.size, scale: scale, insets: insets)
     }
 
-    func makeBitmap(width: Int, height: Int, isOpaque: Bool) -> NSBitmapImageRep? {
+    func makeBitmap(width: CGFloat, height: CGFloat, isOpaque: Bool) -> NSBitmapImageRep? {
         guard width > 0 && height > 0 else { return nil }
         return NSBitmapImageRep(
             bitmapDataPlanes: nil,
-            pixelsWide: width,
-            pixelsHigh: height,
+            pixelsWide: Int(round(width)),
+            pixelsHigh: Int(round(height)),
             bitsPerSample: 8,
             samplesPerPixel: isOpaque ? 3 : 4,
             hasAlpha: !isOpaque,
