@@ -147,8 +147,8 @@ extension SVG {
         guard width > 0 && height > 0 else { return nil }
         return NSBitmapImageRep(
             bitmapDataPlanes: nil,
-            pixelsWide: Int(round(width)),
-            pixelsHigh: Int(round(height)),
+            pixelsWide: Int(width),
+            pixelsHigh: Int(height),
             bitsPerSample: 8,
             samplesPerPixel: isOpaque ? 3 : 4,
             hasAlpha: !isOpaque,
