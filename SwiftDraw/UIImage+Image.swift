@@ -144,7 +144,7 @@ extension SVG {
         return try pngData(size: size, scale: scale, insets: insets)
     }
 
-    func makeBounds(size: CGSize?, scale: CGFloat, insets: Insets) -> (bounds: CGRect, pixelsWide: Int, pixelsHigh: Int) {
+    func makeBounds(size: CGSize?, scale: CGFloat, insets: Insets) -> (bounds: CGRect, pixelsWide: CGFloat, pixelsHigh: CGFloat) {
         let newScale: CGFloat = {
 #if os(watchOS)
             return scale <= 0 ? WKInterfaceDevice.current().screenScale : scale

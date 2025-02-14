@@ -145,15 +145,15 @@ extension Double {
         case .pixel:
             return self
         case .inch:
-            return self * 96
+            return self * 96.0
         case .centimeter:
-            return self * 37.795
+            return self * 96.0 / 2.54
         case .millimeter:
-            return self * 3.7795
+            return self * 96.0 / 25.4
         case .point:
-            return self * 1.3333
+            return self * 4.0 / 3.0
         case .pica:
-            return self * 16
+          return self * 16.0
         }
     }
 }

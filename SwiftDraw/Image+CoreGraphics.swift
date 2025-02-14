@@ -95,7 +95,7 @@ extension SVG {
     static func makeBounds(size: CGSize?,
                            defaultSize: CGSize,
                            scale: CGFloat,
-                           insets: Insets) -> (bounds: CGRect, pixelsWide: Int, pixelsHigh: Int) {
+                           insets: Insets) -> (bounds: CGRect, pixelsWide: CGFloat, pixelsHigh: CGFloat) {
         let viewport = CGSize(
             width: defaultSize.width - (insets.left + insets.right),
             height: defaultSize.height - (insets.top + insets.bottom)
@@ -115,8 +115,8 @@ extension SVG {
                             height: height + insets.top + insets.bottom)
         return (
             bounds: bounds,
-            pixelsWide: Int(width),
-            pixelsHigh: Int(height)
+            pixelsWide: width,
+            pixelsHigh: height
         )
     }
 }
