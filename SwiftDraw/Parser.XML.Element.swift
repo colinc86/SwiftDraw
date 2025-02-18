@@ -98,6 +98,7 @@ extension XMLParser {
         case "use": ge = try parseUse(att)
         case "switch": ge = try parseSwitch(e)
         case "image": ge = try parseImage(att)
+        case "svg": ge = try parseSVG(e)
         default: return nil
         }
 
