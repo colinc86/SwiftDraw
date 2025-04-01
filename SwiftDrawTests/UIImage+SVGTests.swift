@@ -1,5 +1,5 @@
 //
-//  UIImage+ImageTests.swift
+//  UIImage+SVGTests.swift
 //  SwiftDraw
 //
 //  Created by Simon Whitty on 27/11/18.
@@ -35,7 +35,7 @@ import XCTest
 #if canImport(UIKit)
 import UIKit
 
-final class UIImageTests: XCTestCase {
+final class UIImageSVGTests: XCTestCase {
 
     func testImageLoads() {
         let image = UIImage(svgNamed: "lines.svg", in: .test)
@@ -48,7 +48,7 @@ final class UIImageTests: XCTestCase {
     }
 
     func testImageSize() throws {
-        let image = try SVG.parse(#"""
+        let image = try SVG.parseXML(#"""
             <?xml version="1.0" encoding="UTF-8"?>
             <svg width="64" height="64" version="1.1" xmlns="http://www.w3.org/2000/svg">
             </svg>
@@ -74,13 +74,10 @@ final class UIImageTests: XCTestCase {
     }
 }
 
-#endif
-
 private extension SVG {
 
-    static func parse(_ code: String) throws -> SVG {
-        guard let data = code.data(using: .utf8),
-              let svg = SVG(data: data)  else {
+    static func parseXML(_ xml: String) throws -> SVG {
+        guard let svg = SVG(xml: xml) else {
             throw InvalidSVG()
         }
         return svg
@@ -90,3 +87,5 @@ private extension SVG {
         var errorDescription: String? = "Invalid SVG"
     }
 }
+
+#endif

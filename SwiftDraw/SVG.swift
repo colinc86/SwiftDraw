@@ -1,5 +1,5 @@
 //
-//  Image.swift
+//  SVG.swift
 //  SwiftDraw
 //
 //  Created by Simon Whitty on 24/5/17.
@@ -31,16 +31,109 @@
 
 import Foundation
 
+#if compiler(<5.9)
+#warning("SwiftDraw will soon remove support for Swift 5.8")
+#endif
+
 #if canImport(CoreGraphics)
 import CoreGraphics
 
-@objc(SVGImage)
-public final class SVG: NSObject {
-    public let size: CGSize
+public struct SVG: Hashable {
+    public private(set) var size: CGSize
 
-    //An Image is simply an array of CoreGraphics draw commands
-    //see: Renderer.swift
-    let commands: [RendererCommand<CGTypes>]
+    // Array of commands that render the image
+    // see: Renderer.swift
+    var commands: [RendererCommand<CGTypes>]
+
+    public init?(fileURL url: URL, options: SVG.Options = .default) {
+        do {
+            let svg = try DOM.SVG.parse(fileURL: url)
+            self.init(dom: svg, options: options)
+        } catch {
+            XMLParser.logParsingError(for: error, filename: url.lastPathComponent, parsing: nil)
+            return nil
+        }
+    }
+
+    public init?(named name: String, in bundle: Bundle = Bundle.main, options: SVG.Options = .default) {
+        guard let url = bundle.url(forResource: name, withExtension: nil) else { return nil }
+        self.init(fileURL: url, options: options)
+    }
+
+    public init?(xml: String, options: SVG.Options = .default) {
+        guard let data = xml.data(using: .utf8) else { return nil }
+        self.init(data: data)
+    }
+
+    public init?(data: Data, options: SVG.Options = .default) {
+        guard let svg = try? DOM.SVG.parse(data: data) else { return nil }
+        self.init(dom: svg, options: options)
+    }
+
+    public struct Options: OptionSet {
+        public let rawValue: Int
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        public static let hideUnsupportedFilters = Options(rawValue: 1 << 0)
+
+        public static let `default`: Options = []
+    }
+}
+
+public extension SVG {
+
+    func sized(_ s: CGSize) -> SVG {
+        guard size != s else { return self }
+
+        let sx = s.width / size.width
+        let sy = s.height / size.height
+
+        var copy = self
+        copy.commands.insert(.scale(sx: sx, sy: sy), at: 0)
+        copy.size = s
+        return copy
+    }
+
+    func scaled(_ factor: CGFloat) -> SVG {
+        scaled(x: factor, y: factor)
+    }
+
+    func scaled(x: CGFloat, y: CGFloat) -> SVG {
+        var copy = self
+
+        copy.commands.insert(.scale(sx: x, sy: y), at: 0)
+        copy.size = CGSize(
+            width: size.width * x,
+            height: size.height * y
+        )
+        return copy
+    }
+
+    func translated(tx: CGFloat, ty: CGFloat) -> SVG {
+        var copy = self
+        copy.commands.insert(.translate(tx: tx, ty: ty), at: 0)
+        return copy
+    }
+
+    func expanded(_ padding: CGFloat) -> SVG {
+        expanded(top: padding, left: padding, bottom: padding, right: padding)
+    }
+
+    func expanded(top: CGFloat = 0,
+                  left: CGFloat = 0,
+                  bottom: CGFloat = 0,
+                  right: CGFloat = 0) -> SVG {
+        var copy = self
+        copy.commands.insert(.translate(tx: left, ty: top), at: 0)
+        copy.size.width += left + right
+        copy.size.height += top + bottom
+        return copy
+    }
+}
+
+extension SVG {
 
     init(dom: DOM.SVG, options: Options) {
         self.size = CGSize(width: dom.width, height: dom.height)
@@ -60,17 +153,6 @@ public final class SVG: NSObject {
             generator.renderCommands(for: layer)
         )
     }
-
-    public struct Options: OptionSet {
-        public let rawValue: Int
-        public init(rawValue: Int) {
-            self.rawValue = rawValue
-        }
-
-        public static let hideUnsupportedFilters = Options(rawValue: 1 << 0)
-
-        public static let `default`: Options = []
-    }
 }
 
 @available(*, unavailable, renamed: "SVG")
@@ -78,7 +160,7 @@ public enum Image { }
 
 #else
 
-public final class SVG: NSObject {
+public struct SVG {
     public let size: CGSize
 
     init(dom: DOM.SVG, options: Options) {
@@ -114,71 +196,50 @@ public extension SVG {
     static func pdfData(fileURL url: URL, size: CGSize? = nil) throws -> Data {
         throw DOM.Error.missing("not implemented")
     }
+
+    func sized(_ s: CGSize) -> SVG { self }
+
+    func scaled(_ factor: CGFloat) -> SVG { self }
+
+    func scaled(x: CGFloat, y: CGFloat) -> SVG { self }
+
+    func translated(tx: CGFloat, ty: CGFloat) -> SVG { self }
+
+    func expanded(_ padding: CGFloat) -> SVG { self }
+
+    func expanded(top: CGFloat = 0,
+                  left: CGFloat = 0,
+                  bottom: CGFloat = 0,
+                  right: CGFloat = 0) -> SVG { self }
 }
 #endif
 
-extension DOM.SVG {
-
-    static func parse(fileURL url: URL, options: XMLParser.Options = .skipInvalidElements) throws -> DOM.SVG {
-        let element = try XML.SAXParser.parse(contentsOf: url)
-        let parser = XMLParser(options: options, filename: url.lastPathComponent)
-        return try parser.parseSVG(element)
-    }
-
-    static func parse(data: Data, options: XMLParser.Options = .skipInvalidElements) throws -> DOM.SVG {
-        let element = try XML.SAXParser.parse(data: data)
-        let parser = XMLParser(options: options)
-        return try parser.parseSVG(element)
-    }
-}
-
 public extension SVG {
 
-    convenience init?(fileURL url: URL, options: SVG.Options = .default) {
-        do {
-            let svg = try DOM.SVG.parse(fileURL: url)
-            self.init(dom: svg, options: options)
-        } catch {
-            XMLParser.logParsingError(for: error, filename: url.lastPathComponent, parsing: nil)
-            return nil
-        }
+    mutating func size(_ s: CGSize) {
+        self = sized(s)
     }
 
-    convenience init?(named name: String, in bundle: Bundle = Bundle.main, options: SVG.Options = .default) {
-        guard let url = bundle.url(forResource: name, withExtension: nil) else {
-            return nil
-        }
-
-        self.init(fileURL: url, options: options)
+    mutating func scale(_ factor: CGFloat) {
+        self = scaled(factor)
     }
 
-    convenience init?(data: Data, options: SVG.Options = .default) {
-        guard let svg = try? DOM.SVG.parse(data: data) else {
-            return nil
-        }
-
-        self.init(dom: svg, options: options)
+    mutating func scale(x: CGFloat, y: CGFloat) {
+        self = scaled(x: x, y: y)
     }
 
+    mutating func translate(tx: CGFloat, ty: CGFloat) {
+        self = translated(tx: tx, ty: ty)
+    }
 
-    struct Insets: Equatable {
-        public var top: CGFloat
-        public var left: CGFloat
-        public var bottom: CGFloat
-        public var right: CGFloat
+    mutating func expand(_ padding: CGFloat) {
+        self = expanded(padding)
+    }
 
-        public init(
-            top: CGFloat = 0,
-            left: CGFloat = 0, 
-            bottom: CGFloat = 0,
-            right: CGFloat = 0
-        ) {
-            self.top = top
-            self.left = left
-            self.bottom = bottom
-            self.right = right
-        }
-
-        public static let zero = Insets(top: 0, left: 0, bottom: 0, right: 0)
+    mutating func expand(top: CGFloat = 0,
+                         left: CGFloat = 0,
+                         bottom: CGFloat = 0,
+                         right: CGFloat = 0) {
+        self = expanded(top: top, left: left, bottom: bottom, right: right)
     }
 }

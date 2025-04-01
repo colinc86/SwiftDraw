@@ -1,9 +1,9 @@
 //
-//  DOM.Filter.swift
+//  SVG+Insets.swift
 //  SwiftDraw
 //
-//  Created by Simon Whitty on 16/8/22.
-//  Copyright 2022 Simon Whitty
+//  Created by Simon Whitty on 23/2/25.
+//  Copyright 2025 Simon Whitty
 //
 //  Distributed under the permissive zlib license
 //  Get the latest version from here:
@@ -29,20 +29,31 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-extension DOM {
-    
-    final class Filter: Element {
-        var id: String
-        
-        var effects: [Effect]
-        
-        init(id: String) {
-            self.id = id
-            self.effects = []
+import Foundation
+
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
+
+public extension SVG {
+    struct Insets: Equatable {
+        public var top: CGFloat
+        public var left: CGFloat
+        public var bottom: CGFloat
+        public var right: CGFloat
+
+        public init(
+            top: CGFloat = 0,
+            left: CGFloat = 0,
+            bottom: CGFloat = 0,
+            right: CGFloat = 0
+        ) {
+            self.top = top
+            self.left = left
+            self.bottom = bottom
+            self.right = right
         }
-        
-        enum Effect: Hashable {
-            case gaussianBlur(stdDeviation: DOM.Float)
-        }
+
+        public static let zero = Insets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }

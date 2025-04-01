@@ -1,9 +1,9 @@
 //
-//  AppDelegate.swift
+//  DOM.SVG+Parse.swift
 //  SwiftDraw
 //
-//  Created by Simon Whitty on 10/2/19.
-//  Copyright 2019 Simon Whitty
+//  Created by Simon Whitty on 23/2/25.
+//  Copyright 2025 Simon Whitty
 //
 //  Distributed under the permissive zlib license
 //  Get the latest version from here:
@@ -29,25 +29,19 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-import UIKit
-import SwiftUI
+import Foundation
 
-@UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+extension DOM.SVG {
 
-    var window: UIWindow?
-
-
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
-        let window = UIWindow()
-        window.rootViewController = UINavigationController(rootViewController: UIHostingController(rootView: GalleryView()))
-        window.makeKeyAndVisible()
-        self.window = window
-
-        return true
+    static func parse(fileURL url: URL, options: XMLParser.Options = .skipInvalidElements) throws -> DOM.SVG {
+        let element = try XML.SAXParser.parse(contentsOf: url)
+        let parser = XMLParser(options: options, filename: url.lastPathComponent)
+        return try parser.parseSVG(element)
     }
 
-
+    static func parse(data: Data, options: XMLParser.Options = .skipInvalidElements) throws -> DOM.SVG {
+        let element = try XML.SAXParser.parse(data: data)
+        let parser = XMLParser(options: options)
+        return try parser.parseSVG(element)
+    }
 }
-

@@ -34,36 +34,43 @@ import SwiftUI
 
 struct GalleryView: View {
 
-    var imageNames: [String] = [
-        "avocado.svg",
-        "angry.svg",
-        "dish.svg",
-        "mouth-open.svg",
-        "sleepy.svg",
-        "smile.svg",
-        "snake.svg",
-        "spider.svg",
-        "star-struck.svg",
-        "worried.svg",
-        "yawning.svg",
-        "thats-no-moon.svg",
-        "alert.svg"
-    ]
+    var images: [SVG] = {
+        [
+            "avocado.svg",
+            "angry.svg",
+            "dish.svg",
+            "mouth-open.svg",
+            "sleepy.svg",
+            "smile.svg",
+            "snake.svg",
+            "spider.svg",
+            "star-struck.svg",
+            "worried.svg",
+            "yawning.svg",
+            "thats-no-moon.svg",
+            "alert.svg"
+        ].compactMap {
+            SVG(named: $0, in: .samples)
+        }
+    }()
 
     var body: some View {
-        if #available(iOS 15.0, *) {
-            ScrollView {
-                LazyVStack(spacing: 20) {
-                    ForEach(imageNames, id: \.self) { name in
-                        SVGView(name, bundle: .samples)
-                            .aspectRatio(contentMode: .fit)
-                            .padding([.leading, .trailing], 10)
-                           // .frame(maxWidth: 320)
-                    }
+        ScrollView {
+            LazyVStack(spacing: 20) {
+                ForEach(images, id: \.self) { image in
+                    SVGView(svg: image)
+                        .aspectRatio(contentMode: .fit)
+                        .padding([.leading, .trailing], 10)
                 }
-                .background(Color.white)
             }
-
+            .background(Color.white)
         }
     }
+}
+
+extension Bundle {
+    static let samples: Bundle = {
+        let url = Bundle.main.url(forResource: "Samples.bundle", withExtension: nil)!
+        return Bundle(url: url)!
+    }()
 }

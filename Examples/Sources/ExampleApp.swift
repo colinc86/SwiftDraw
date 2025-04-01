@@ -1,9 +1,9 @@
 //
-//  DOM.Filter.swift
+//  AppDelegate.swift
 //  SwiftDraw
 //
-//  Created by Simon Whitty on 16/8/22.
-//  Copyright 2022 Simon Whitty
+//  Created by Simon Whitty on 10/2/19.
+//  Copyright 2019 Simon Whitty
 //
 //  Distributed under the permissive zlib license
 //  Get the latest version from here:
@@ -29,20 +29,15 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-extension DOM {
-    
-    final class Filter: Element {
-        var id: String
-        
-        var effects: [Effect]
-        
-        init(id: String) {
-            self.id = id
-            self.effects = []
-        }
-        
-        enum Effect: Hashable {
-            case gaussianBlur(stdDeviation: DOM.Float)
+import SwiftUI
+
+@main
+struct ExampleApp: App {
+    var body: some Scene {
+        WindowGroup {
+            NavigationStack {
+                GalleryView()
+            }
         }
     }
 }
