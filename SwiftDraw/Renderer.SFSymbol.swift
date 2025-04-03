@@ -207,6 +207,7 @@ extension SFSymbolRenderer {
                 }
 
             case let .text(text, point, attributes):
+                print("making path for text \(text) at \(point) with \(attributes)")
                 if let path = makePath(for: text, at: point, with: attributes) {
                     paths.append(SymbolPath(class: symbolClass, path: path.applying(matrix: ctm)))
                 }
