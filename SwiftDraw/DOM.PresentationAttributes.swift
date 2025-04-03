@@ -53,6 +53,7 @@ extension DOM {
         var fillRule: DOM.FillRule?
         
         var fontFamily: String?
+        var fontStyle: String?
         var fontSize: Float?
         var textAnchor: TextAnchor?
     
@@ -131,6 +132,7 @@ extension DOM.PresentationAttributes {
         merged.fillRule = att.fillRule ?? fillRule
         
         merged.fontFamily = att.fontFamily ?? fontFamily
+        merged.fontStyle = att.fontStyle ?? fontStyle
         merged.fontSize = att.fontSize ?? fontSize
         merged.textAnchor = att.textAnchor ?? textAnchor
         

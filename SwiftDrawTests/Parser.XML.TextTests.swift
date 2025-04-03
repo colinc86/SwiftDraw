@@ -40,6 +40,7 @@ final class ParserXMLTextTests: XCTestCase {
         el.attributes["x"] = "1"
         el.attributes["y"] = "2"
         el.attributes["font-family"] = "Futura"
+        el.attributes["font-style"] = "normal"
         el.attributes["font-size"] = "12.5"
         el.attributes["text-anchor"] = "end"
 
@@ -48,6 +49,7 @@ final class ParserXMLTextTests: XCTestCase {
         XCTAssertEqual(text.y, 2)
         XCTAssertEqual(text.value, "Simon")
         XCTAssertEqual(text.attributes.fontFamily, "Futura")
+        XCTAssertEqual(text.attributes.fontStyle, "normal")
         XCTAssertEqual(text.attributes.fontSize, 12.5)
         XCTAssertEqual(text.attributes.textAnchor, .end)
     }

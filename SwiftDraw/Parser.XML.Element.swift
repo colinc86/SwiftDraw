@@ -258,6 +258,7 @@ extension XMLParser {
         el.fillRule = try att.parseRaw("fill-rule")
 
         el.fontFamily = (try att.parseString("font-family"))?.trimmingCharacters(in: .whitespacesAndNewlines)
+        el.fontStyle = (try att.parseString("font-style"))?.trimmingCharacters(in: .whitespacesAndNewlines)
         el.fontSize = try att.parseFloat("font-size")
         el.textAnchor = try att.parseRaw("text-anchor")
 
@@ -328,6 +329,7 @@ extension DOM.PresentationAttributes {
         fillOpacity = attributes.fillOpacity
         fillRule = attributes.fillRule
         fontFamily = attributes.fontFamily
+        fontStyle = attributes.fontStyle
         fontSize = attributes.fontSize
         transform = attributes.transform
         clipPath = attributes.clipPath

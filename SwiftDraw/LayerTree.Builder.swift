@@ -267,9 +267,38 @@ extension LayerTree.Builder {
         let fill = LayerTree.Color
             .create(from: state.fill.makeColor(), current: state.color)
             .withAlpha(state.fillOpacity).maybeNone()
+      
+        var fontName: String = state.fontFamily
+        switch state.fontFamily {
+        case "serif":
+          switch state.fontStyle {
+          case "italic", "oblique": 
+            fontName = "TimesNewRomanPS-ItalicMT"
+          default:
+            fontName = "TimesNewRomanPSMT"
+          }
+        case "sans-serif": 
+          switch state.fontStyle {
+          case "italic":
+            fontName = "HelveticaNeue-Italic"
+          case "oblique":
+            fontName = "Helvetica-Oblique"
+          default:
+            fontName = "Helvetica"
+          }
+        case "monospace":
+          switch state.fontStyle {
+            case "italic", "oblique":
+            fontName = "CourierNewPS-ItalicMT"
+          default:
+            fontName = "CourierNewPSMT"
+          }
+        default: break
+        }
+      
         return LayerTree.TextAttributes(
             color: fill,
-            fontName: state.fontFamily,
+            fontName: fontName,
             size: state.fontSize,
             anchor: state.textAnchor
         )
@@ -373,6 +402,7 @@ extension LayerTree.Builder {
         var filter: DOM.URL?
 
         var fontFamily: String
+        var fontStyle: String
         var fontSize: DOM.Float
         var textAnchor: DOM.TextAnchor
 
@@ -396,6 +426,7 @@ extension LayerTree.Builder {
             textAnchor = .start
 
             fontFamily = "Helvetica"
+            fontStyle = "normal"
             fontSize = 12.0
         }
     }
@@ -426,6 +457,7 @@ extension LayerTree.Builder {
         state.filter = attributes.filter ?? existing.filter
 
         state.fontFamily = attributes.fontFamily ?? existing.fontFamily
+        state.fontStyle = attributes.fontStyle ?? existing.fontStyle
         state.fontSize = attributes.fontSize ?? existing.fontSize
         state.textAnchor = attributes.textAnchor ?? existing.textAnchor
 

@@ -133,6 +133,7 @@ extension XML.Formatter {
             attributes["fill-rule"] = graphic.fillRule?.rawValue
 
             attributes["font-family"] = graphic.fontFamily
+            attributes["font-style"] = graphic.fontStyle
             attributes["font-size"] = formatter.format(graphic.fontSize)
             attributes["text-anchor"] = graphic.textAnchor?.rawValue
 
