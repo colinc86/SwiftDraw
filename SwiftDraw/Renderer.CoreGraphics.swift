@@ -241,7 +241,6 @@ struct CGProvider: RendererTypeProvider {
         let font = CTFontCreateWithName(attributes.fontName as CFString,
                                         createFloat(from: attributes.size),
                                         nil)
-        print("2 creating CTFont with font name \(attributes.fontName)")
         guard let path = text.toPath(font: font) else { return nil }
 
         var transform = CGAffineTransform(translationX: createFloat(from: origin.x), y: createFloat(from: origin.y))

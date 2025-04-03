@@ -117,7 +117,6 @@ private extension LayerTree.Point {
 extension String {
 
   func toPath(font: CTFont) -> CGPath? {
-    print("drawing text \(self)")
     let attributes = [kCTFontAttributeName: font]
     let attString = CFAttributedStringCreate(nil, self as CFString, attributes as CFDictionary)!
     let line = CTLineCreateWithAttributedString(attString)

@@ -295,8 +295,7 @@ extension LayerTree.Builder {
           }
         default: break
         }
-      
-        print("created text attributes with font name \(fontName)")
+
         return LayerTree.TextAttributes(
             color: fill,
             fontName: fontName,
