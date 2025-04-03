@@ -40,6 +40,7 @@ extension LayerTree.Builder {
 
 #if canImport(CoreText)
     static func makeXOffset(for text: String, with attributes: LayerTree.TextAttributes) -> LayerTree.Float {
+        print("1 creating CTFont with font name \(attributes.fontName)")
         let font = CTFontCreateWithName(attributes.fontName as CFString,
                                         CGFloat(attributes.size),
                                         nil)
