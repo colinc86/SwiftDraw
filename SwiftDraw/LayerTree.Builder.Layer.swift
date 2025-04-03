@@ -60,7 +60,6 @@ extension LayerTree.Builder {
     static func makeTextContents(from text: DOM.Text, with state: State) -> LayerTree.Layer.Contents {
         var point = Point(text.x ?? 0, text.y ?? 0)
         var att = makeTextAttributes(with: state)
-        att.fontName = text.attributes.fontFamily ?? att.fontName
         att.size = text.attributes.fontSize ?? att.size
         att.anchor = text.attributes.textAnchor ?? att.anchor
         point.x += makeXOffset(for: text.value, with: att)
